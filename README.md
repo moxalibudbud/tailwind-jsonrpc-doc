@@ -2,6 +2,9 @@
 
 A modern, responsive API documentation site built with Tailwind CSS and shadcn design system. This documentation covers a JSON-RPC 2.0 API with comprehensive method descriptions, parameters, examples, and error handling.
 
+
+#### [View Demo](https://moxalibudbud.github.io/tailwind-jsonrpc-doc/template.html)
+
 ## Features
 
 - 🔍 **Live Search** - Instantly search through API methods and descriptions
