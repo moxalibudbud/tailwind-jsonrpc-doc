@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Example API Documentation</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        border: "hsl(214.3 31.8% 91.4%)",
+                        input: "hsl(214.3 31.8% 91.4%)",
+                        ring: "hsl(222.2 84% 4.9%)",
+                        background: "hsl(0 0% 100%)",
+                        foreground: "hsl(222.2 84% 4.9%)",
+                        primary: {
+                            DEFAULT: "hsl(222.2 47.4% 11.2%)",
+                            foreground: "hsl(210 40% 98%)",
+                        },
+                        secondary: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                        muted: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(215.4 16.3% 46.9%)",
+                        },
+                        accent: {
+                            DEFAULT: "hsl(210 40% 96%)",
+                            foreground: "hsl(222.2 84% 4.9%)",
+                        },
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .method-card {
+            transition: opacity 0.2s ease-in-out;
+        }
+        .method-card.disabled {
+            opacity: 0.5;
+        }
+        .nav-link.disabled {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .collapsible-content.show {
+            max-height: 2000px;
+        }
+    </style>
+</head>
+<body class="bg-background text-foreground">
+    <!-- Header -->
+    <header class="sticky top-0 z-50 w-full border-b bg-primary text-primary-foreground">
+        <div class="flex h-14 items-center px-6">
+            <h1 class="text-lg font-semibold">Example API 1.0</h1>
+        </div>
+    </header>
+
+    <div class="flex h-[calc(100vh-3.5rem)]">
+        <!-- Sidebar -->
+        <aside class="w-64 border-r bg-background overflow-y-auto">
+            <!-- Search -->
+            <div class="p-4 border-b">
+                <div class="relative">
+                    <input
+                        type="search"
+                        placeholder="Search methods..."
+                        class="search-input w-full px-3 py-2 text-sm border border-input rounded-md bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                    />
+                </div>
+            </div>
+
+            <!-- Navigation -->
+            <nav class="p-4">
+                <ul class="space-y-1" id="nav-list">
+                    <li>
+                        <a href="#Session_Login" class="nav-link block px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">
+                            Session.Login
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#Session_Logout" class="nav-link block px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">
+                            Session.Logout
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#Session_KeepAlive" class="nav-link block px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">
+                            Session.KeepAlive
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#User_Add" class="nav-link block px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">
+                            User.Add
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#User_Delete" class="nav-link block px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">
+                            User.Delete
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#User_GetAll" class="nav-link block px-3 py-2 text-sm rounded-md hover:bg-accent hover:text-accent-foreground transition-colors">
+                            User.GetAll
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="flex-1 overflow-y-auto p-6">
+            <!-- Introduction -->
+            <div class="mb-8 rounded-lg border bg-background p-6">
+                <p class="text-muted-foreground mb-4">
+                    An example API which handles various RPC requests.<br />
+                    This API follows the JSON-RPC 2.0 specification. More information available at 
+                    <a href="http://www.jsonrpc.org/specification" class="text-blue-600 hover:underline">http://www.jsonrpc.org/specification</a>.
+                </p>
+
+                <div class="mt-6">
+                    <h3 class="text-lg font-semibold mb-3">Servers</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full border-collapse">
+                            <thead>
+                                <tr class="border-b">
+                                    <th class="text-left py-2 px-3 font-medium">URL</th>
+                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b">
+                                    <td class="py-2 px-3 font-mono text-sm">https://www.example.org</td>
+                                    <td class="py-2 px-3 text-sm text-muted-foreground">Production environment</td>
+                                </tr>
+                                <tr class="border-b">
+                                    <td class="py-2 px-3 font-mono text-sm">https://www.test.example.org</td>
+                                    <td class="py-2 px-3 text-sm text-muted-foreground">Test environment</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Methods -->
+            <div class="space-y-6">
+                <!-- Session.Login -->
+                <div class="method-card rounded-lg border bg-background" id="Session_Login">
+                    <div class="cursor-pointer bg-primary text-primary-foreground p-4 rounded-t-lg" onclick="toggleCollapse('Session_Login-content')">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold">Session.Login</h2>
+                            <span class="px-2 py-1 text-xs bg-primary-foreground text-primary rounded">Session</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content show p-6" id="Session_Login-content">
+                        <p class="text-muted-foreground mb-2">Creates a new session.</p>
+                        <p class="text-muted-foreground mb-6">Authenticates the user using the provided credentials and creates a new session.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Parameters</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params</td>
+                                                    <td class="py-2 px-3">object</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params.name</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Name of the user to create a session for.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params.password</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Password of the user to create a session for.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Result</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result</td>
+                                                    <td class="py-2 px-3">object</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result.session_token</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Bearer token of the created session.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result?.validity</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">multipleOf="1"</td>
+                                                    <td class="py-2 px-3">Validity of the session token in seconds.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Errors</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Code</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Message</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">1</td>
+                                                    <td class="py-2 px-3">InvalidCredentials</td>
+                                                    <td class="py-2 px-3">The provided credentials are invalid.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Request example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "method": "Session.Login",
+  "params": {
+    "name": "admin",
+    "password": "123456"
+  }
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Response example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "result": {
+    "session_token": "123456890",
+    "validity": 3600
+  }
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session.Logout -->
+                <div class="method-card rounded-lg border bg-background" id="Session_Logout">
+                    <div class="cursor-pointer bg-primary text-primary-foreground p-4 rounded-t-lg" onclick="toggleCollapse('Session_Logout-content')">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold">Session.Logout</h2>
+                            <span class="px-2 py-1 text-xs bg-primary-foreground text-primary rounded">Session</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content show p-6" id="Session_Logout-content">
+                        <p class="text-muted-foreground mb-6">Destroys an existing session.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Result</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">minimum="0", maximum="0"</td>
+                                                    <td class="py-2 px-3">Always '0'.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Errors</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Code</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Message</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">2</td>
+                                                    <td class="py-2 px-3">NotFound</td>
+                                                    <td class="py-2 px-3">Session could not be found.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Request example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "method": "Session.Logout"
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Response example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "result": 0
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Session.KeepAlive -->
+                <div class="method-card rounded-lg border bg-background" id="Session_KeepAlive">
+                    <div class="cursor-pointer bg-primary text-primary-foreground p-4 rounded-t-lg" onclick="toggleCollapse('Session_KeepAlive-content')">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold">Session.KeepAlive</h2>
+                            <span class="px-2 py-1 text-xs bg-primary-foreground text-primary rounded">Session</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content show p-6" id="Session_KeepAlive-content">
+                        <p class="text-muted-foreground mb-2">Refreshs an existing session.</p>
+                        <p class="text-muted-foreground mb-6">Refreshs an existing session so that it keeps alive and doesn't time out. This method does nothing but refreshing the timeout.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Result</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">minimum="0", maximum="0"</td>
+                                                    <td class="py-2 px-3">Always '0'.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Errors</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Code</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Message</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">2</td>
+                                                    <td class="py-2 px-3">NotFound</td>
+                                                    <td class="py-2 px-3">Session could not be found.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Request example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "method": "Session.KeepAlive"
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Response example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "result": 0
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User.Add -->
+                <div class="method-card rounded-lg border bg-background" id="User_Add">
+                    <div class="cursor-pointer bg-primary text-primary-foreground p-4 rounded-t-lg" onclick="toggleCollapse('User_Add-content')">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold">User.Add</h2>
+                            <span class="px-2 py-1 text-xs bg-primary-foreground text-primary rounded">User</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content show p-6" id="User_Add-content">
+                        <p class="text-muted-foreground mb-6">Adds a new user.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Parameters</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params</td>
+                                                    <td class="py-2 px-3">object</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params.name</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3">Name of the user to add.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params.name(0)</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params.name(1)</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">multipleOf="1"</td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params.email</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3">Email of the user to add.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params?.address</td>
+                                                    <td class="py-2 px-3">array</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3">Address of the user to add.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params?.address[0]</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">minimum="1"</td>
+                                                    <td class="py-2 px-3">Address number.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params?.address[1]</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Name of the street.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params?.address[2]</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">enum="Street,Avenue,Boulevard"</td>
+                                                    <td class="py-2 px-3">Type of the street.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params?.address[3]</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">enum="NW,NE,SW,SE"</td>
+                                                    <td class="py-2 px-3">City quadrant of the address</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params.password</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Password of the user to add.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Result</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">minimum="0", maximum="0"</td>
+                                                    <td class="py-2 px-3">Always '0'.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Errors</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Code</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Message</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">3</td>
+                                                    <td class="py-2 px-3">Already exists</td>
+                                                    <td class="py-2 px-3">A user with that name already exists.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Request example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "method": "User.Add",
+  "params": {
+    "name": "user",
+    "email": "user@example.org",
+    "address": [
+      1600,
+      "Pennsylvania",
+      "Avenue",
+      "NW"
+    ],
+    "password": "1234567890"
+  }
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Response example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "result": 0
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User.Delete -->
+                <div class="method-card rounded-lg border bg-background" id="User_Delete">
+                    <div class="cursor-pointer bg-primary text-primary-foreground p-4 rounded-t-lg" onclick="toggleCollapse('User_Delete-content')">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold">User.Delete</h2>
+                            <span class="px-2 py-1 text-xs bg-primary-foreground text-primary rounded">User</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content show p-6" id="User_Delete-content">
+                        <p class="text-muted-foreground mb-6">Deletes an existing user.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Parameters</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params(0)</td>
+                                                    <td class="py-2 px-3">object</td>
+                                                    <td class="py-2 px-3 text-xs">exclusive</td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params(0).name</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1", pattern="^(A|B)\-.*$"</td>
+                                                    <td class="py-2 px-3">Name of the user to delete.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params(1)</td>
+                                                    <td class="py-2 px-3">object</td>
+                                                    <td class="py-2 px-3 text-xs">exclusive</td>
+                                                    <td class="py-2 px-3"></td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">params(1).id</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Id of the user to delete.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Result</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">minimum="0", maximum="0"</td>
+                                                    <td class="py-2 px-3">Always '0'.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Errors</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Code</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Message</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">2</td>
+                                                    <td class="py-2 px-3">Not found</td>
+                                                    <td class="py-2 px-3">A user with that name could not be found.</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Request example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "method": "User.Delete",
+  "params": {
+    "name": "user"
+  }
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Response example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "result": 0
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- User.GetAll -->
+                <div class="method-card rounded-lg border bg-background" id="User_GetAll">
+                    <div class="cursor-pointer bg-primary text-primary-foreground p-4 rounded-t-lg" onclick="toggleCollapse('User_GetAll-content')">
+                        <div class="flex items-center justify-between">
+                            <h2 class="text-lg font-semibold">User.GetAll</h2>
+                            <span class="px-2 py-1 text-xs bg-primary-foreground text-primary rounded">User</span>
+                        </div>
+                    </div>
+                    <div class="collapsible-content show p-6" id="User_GetAll-content">
+                        <p class="text-muted-foreground mb-2">Returns all users.</p>
+                        <p class="text-muted-foreground mb-6">This method returns an array with information about all existing users.</p>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                            <div class="lg:col-span-2 space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Result</h3>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full border-collapse text-sm">
+                                            <thead>
+                                                <tr class="border-b bg-muted">
+                                                    <th class="text-left py-2 px-3 font-medium">Name</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Type</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Constraints</th>
+                                                    <th class="text-left py-2 px-3 font-medium">Description</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result</td>
+                                                    <td class="py-2 px-3">array</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3">List of all existing users.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[]</td>
+                                                    <td class="py-2 px-3">object</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3">Information about a user.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[].name</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Name of the user.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[].email</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">format="email"</td>
+                                                    <td class="py-2 px-3">Email of the user.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[].address</td>
+                                                    <td class="py-2 px-3">array</td>
+                                                    <td class="py-2 px-3"></td>
+                                                    <td class="py-2 px-3">Address of the user to add.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[].address[0:number]</td>
+                                                    <td class="py-2 px-3">number</td>
+                                                    <td class="py-2 px-3 text-xs">minimum="1"</td>
+                                                    <td class="py-2 px-3">Address number.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[].address[1:street_name]</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">minLength="1"</td>
+                                                    <td class="py-2 px-3">Name of the street.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[].address[2:street_type]</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">enum="Street,Avenue,Boulevard"</td>
+                                                    <td class="py-2 px-3">Type of the street.</td>
+                                                </tr>
+                                                <tr class="border-b">
+                                                    <td class="py-2 px-3 font-mono">result[].address[3:direction]</td>
+                                                    <td class="py-2 px-3">string</td>
+                                                    <td class="py-2 px-3 text-xs">enum="NW,NE,SW,SE"</td>
+                                                    <td class="py-2 px-3">City quadrant of the address</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Request example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "method": "User.GetAll"
+}</code></pre>
+                                </div>
+
+                                <div>
+                                    <h3 class="text-base font-semibold mb-3">Response example</h3>
+                                    <pre class="bg-muted p-4 rounded-md text-sm overflow-x-auto"><code>{
+  "jsonrpc": "2.0",
+  "id": "1234567890",
+  "result": [
+    {
+      "name": "user",
+      "email": "user@example.org",
+      "address": [
+        1600,
+        "Pennsylvania",
+        "Avenue",
+        "NW"
+      ]
+    }
+  ]
+}</code></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Toggle collapse functionality
+        function toggleCollapse(contentId) {
+            const content = document.getElementById(contentId);
+            content.classList.toggle('show');
+        }
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const methodCards = document.querySelectorAll('.method-card');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            // Reset all states
+            methodCards.forEach(card => card.classList.remove('disabled'));
+            navLinks.forEach(link => link.classList.remove('disabled'));
+
+            if (searchTerm) {
+                let firstVisibleCard = null;
+
+                methodCards.forEach(card => {
+                    const cardText = card.textContent.toLowerCase();
+                    const cardId = card.id;
+                    const navLink = document.querySelector(`a[href="#${cardId}"]`);
+
+                    if (cardText.includes(searchTerm)) {
+                        // Show matching cards
+                        const content = card.querySelector('.collapsible-content');
+                        if (content) content.classList.add('show');
+                        if (!firstVisibleCard) firstVisibleCard = card;
+                    } else {
+                        // Hide non-matching cards
+                        card.classList.add('disabled');
+                        if (navLink) navLink.classList.add('disabled');
+                        const content = card.querySelector('.collapsible-content');
+                        if (content) content.classList.remove('show');
+                    }
+                });
+
+                // Scroll to first visible card
+                if (firstVisibleCard) {
+                    firstVisibleCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            } else {
+                // Show all cards when search is empty
+                methodCards.forEach(card => {
+                    const content = card.querySelector('.collapsible-content');
+                    if (content) content.classList.add('show');
+                });
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
+            });
+        });
+    </script>
+</body>
+</html>
